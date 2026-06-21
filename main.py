@@ -1,7 +1,7 @@
 contacts = []
 
 def add_contact(name, phone, email):
-    contact = {"name": name, "phone": phone, "email": email}  # ← добавить отступ
+    contact = {"name": name, "phone": phone, "email": email}  
     contacts.append(contact)
 
 def show_all():
