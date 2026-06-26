@@ -9,11 +9,8 @@ def show_all():
         print(f"Имя: {contact['name']}, Телефон: {contact['phone']}, Email: {contact['email']}")
 
 def find_contact(query):
-    result = []
-    for contact in contacts:
-        if query == contact["name"] or query == contact["phone"]:
-            result.append(contact)
-    return result
+    result = filter(lambda c: c["name"] == query or c["phone"] == query, contacts)
+    return list(result)
 
 def delete_contact(query):
     for contact in contacts:
@@ -47,10 +44,61 @@ def load_contacts():
         pass
 
 load_contacts()
-add_contact("Dinara", "+79174465420", "bikdifa@mail.ru")
-save_contacts()
-show_all()
 
-load_contacts()
+while True:
+    print("\n1. Добавить контакт")
+    print("2. Найти контакт")
+    print("3. Удалить контакт")
+    print("4. Обновить контакт")
+    print("5. Просмотреть контакты")
+    print("6. Выйти")
 
-load_contacts()
+    choice = input("Выберите действие: ")
+
+    if choice == "1":
+        name = input("Имя: ")
+        phone = input("Телефон: ")
+        email = input("Email: ")
+        add_contact(name, phone, email)
+        save_contacts()
+        print("Контакт успешно добавлен!")
+
+    elif choice == "2":
+        query = input("Введите имя или телефон: ")
+        result = find_contact(query)
+        if result:
+            for contact in result:
+                print(f"Имя: {contact['name']}, Телефон: {contact['phone']}, Email: {contact['email']}")
+        else:
+            print("Контакт не найден.")
+
+    elif choice == "3":
+        query = input("Введите имя или телефон: ")
+        if delete_contact(query):
+            save_contacts()
+            print("Контакт удалён!")
+        else:
+            print("Контакт не найден.")
+
+    elif choice == "4":
+        query = input("Введите имя или телефон: ")
+        new_name = input("Новое имя: ")
+        new_phone = input("Новый телефон: ")
+        new_email = input("Новый email: ")
+        if update_contact(query, new_name, new_phone, new_email):
+            save_contacts()
+            print("Контакт обновлён!")
+        else:
+            print("Контакт не найден.")
+
+    elif choice == "5":
+        sorted_contacts = sorted(contacts, key=lambda c: c["name"])
+        for contact in sorted_contacts:
+            print(f"Имя: {contact['name']}, Телефон: {contact['phone']}, Email: {contact['email']}")
+
+    elif choice == "6":
+        print("Программа завершена. До свидания!")
+        break
+
+    else:
+        print("Неверный выбор. Попробуйте снова.")
