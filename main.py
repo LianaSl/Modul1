@@ -1,5 +1,15 @@
 contacts = []
 
+def valid_name(name):
+    return name.strip() != ""
+
+def valid_phone(phone):
+    return phone.isdigit() and len(phone) == 12
+
+def valid_email(email):
+    return email.strip() != "" and "@" in email and "." in email
+
+
 def add_contact(name, phone, email):
     contact = {"name": name, "phone": phone, "email": email}
     contacts.append(contact)
@@ -38,8 +48,9 @@ def load_contacts():
         with open("contacts.txt", "r", encoding="utf-8") as f:
             for line in f:
                 parts = line.strip().split(",")
-                contact = {"name": parts[0], "phone": parts[1], "email": parts[2]}
-                contacts.append(contact)
+                if len(parts) == 3:
+                    contact = {"name": parts[0], "phone": parts[1], "email": parts[2]}
+                    contacts.append(contact)
     except FileNotFoundError:
         pass
 
@@ -56,12 +67,28 @@ while True:
     choice = input("Выберите действие: ")
 
     if choice == "1":
-        name = input("Имя: ")
-        phone = input("Телефон: ")
-        email = input("Email: ")
+
+        while True:
+            name = input("Имя: ")
+            if valid_name(name):
+                break
+            print("❌ Имя не может быть пустым.")
+
+        while True:
+            phone = input("Телефон: ")
+            if valid_phone(phone):
+                break
+            print("❌ Телефон должен содержать 12 цифр.")
+
+        while True:
+            email = input("Email: ")
+            if valid_email(email):
+                break
+            print("❌ Некорректный email.")
+
         add_contact(name, phone, email)
         save_contacts()
-        print("Контакт успешно добавлен!")
+        print("✅ Контакт успешно добавлен!")
 
     elif choice == "2":
         query = input("Введите имя или телефон: ")
@@ -70,26 +97,42 @@ while True:
             for contact in result:
                 print(f"Имя: {contact['name']}, Телефон: {contact['phone']}, Email: {contact['email']}")
         else:
-            print("Контакт не найден.")
+            print("❌ Контакт не найден.")
 
     elif choice == "3":
         query = input("Введите имя или телефон: ")
         if delete_contact(query):
             save_contacts()
-            print("Контакт удалён!")
+            print("✅ Контакт удалён!")
         else:
-            print("Контакт не найден.")
+            print("❌ Контакт не найден.")
 
     elif choice == "4":
         query = input("Введите имя или телефон: ")
-        new_name = input("Новое имя: ")
-        new_phone = input("Новый телефон: ")
-        new_email = input("Новый email: ")
+
+        while True:
+            new_name = input("Новое имя: ")
+            if valid_name(new_name):
+                break
+            print("❌ Имя не может быть пустым.")
+
+        while True:
+            new_phone = input("Новый телефон: ")
+            if valid_phone(new_phone):
+                break
+            print("❌ Телефон должен содержать 12 цифр.")
+
+        while True:
+            new_email = input("Новый email: ")
+            if valid_email(new_email):
+                break
+            print("❌ Некорректный email.")
+
         if update_contact(query, new_name, new_phone, new_email):
             save_contacts()
-            print("Контакт обновлён!")
+            print("✅ Контакт обновлён!")
         else:
-            print("Контакт не найден.")
+            print("❌ Контакт не найден.")
 
     elif choice == "5":
         sorted_contacts = sorted(contacts, key=lambda c: c["name"])
@@ -97,8 +140,8 @@ while True:
             print(f"Имя: {contact['name']}, Телефон: {contact['phone']}, Email: {contact['email']}")
 
     elif choice == "6":
-        print("Программа завершена. До свидания!")
+        print("👋 Программа завершена. До свидания!")
         break
 
     else:
-        print("Неверный выбор. Попробуйте снова.")
+        print("❌ Неверный выбор. Попробуйте снова.")
